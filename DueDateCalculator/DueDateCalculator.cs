@@ -17,7 +17,15 @@ namespace DueDateCalculator
 
             if(daysTurnaroundTime > 0)
             {
+                //need to skip weekend days                
                 resolveDate = resolveDate.AddDays(daysTurnaroundTime);
+                if (resolveDate.DayOfWeek == DayOfWeek.Saturday)
+                {
+                    resolveDate = resolveDate.AddDays(2);
+                } else if (resolveDate.DayOfWeek == DayOfWeek.Sunday)
+                {
+                    resolveDate = resolveDate.AddDays(1);
+                }                
             }
 
             if(hoursTurnaroundTime > 0)
