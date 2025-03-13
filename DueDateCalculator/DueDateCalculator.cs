@@ -16,26 +16,7 @@ namespace DueDateCalculator
             int hoursTurnaroundTime = turnaroundTime % 8;
 
             resolveDate = AddDays(resolveDate, daysTurnaroundTime);
-            
-            if(hoursTurnaroundTime > 0)
-            {
-                //hours can be no more than 7, so we can never add more than a single day.
-                if(resolveDate.Hour + hoursTurnaroundTime > 17)
-                {
-                    resolveDate = resolveDate.AddHours(-8);
-                    resolveDate = resolveDate.AddDays(1);
-                    if (resolveDate.DayOfWeek == DayOfWeek.Saturday)
-                    {
-                        resolveDate = resolveDate.AddDays(2);
-                    }
-                    else if (resolveDate.DayOfWeek == DayOfWeek.Sunday)
-                    {
-                        resolveDate = resolveDate.AddDays(1);
-                    }
-
-                } 
-                resolveDate = resolveDate.AddHours(hoursTurnaroundTime);
-            }
+            resolveDate = AddHours(resolveDate, hoursTurnaroundTime);
 
             return resolveDate;            
         }
@@ -48,6 +29,20 @@ namespace DueDateCalculator
                 if(date.DayOfWeek == DayOfWeek.Saturday)
                 {
                     date = date.AddDays(2); //skip to monday
+                }
+            }
+            return date;
+        }
+
+        public static DateTime AddHours(DateTime date, int hours)
+        {
+            for(int i = hours; hours > 0; hours--)
+            {
+                date = date.AddHours(1);
+                if(date.Hour > 17)
+                {
+                    date = AddDays(date, 1); //go to next available day
+                    date = date.AddHours(-8); //go to the beginning of the day
                 }
             }
             return date;
