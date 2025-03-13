@@ -5,6 +5,8 @@ VisualStudioVersion = 17.13.35806.99 d17.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DueDateCalculator", "DueDateCalculator\DueDateCalculator.csproj", "{B93D39AD-7996-4F82-8E26-BBD556453E65}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DueDateCalculator.Tests", "DueDateCalculator.Tests\DueDateCalculator.Tests.csproj", "{D3F1A545-A3FF-463C-A4FD-84E0BEA6C22C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{B93D39AD-7996-4F82-8E26-BBD556453E65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B93D39AD-7996-4F82-8E26-BBD556453E65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B93D39AD-7996-4F82-8E26-BBD556453E65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3F1A545-A3FF-463C-A4FD-84E0BEA6C22C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3F1A545-A3FF-463C-A4FD-84E0BEA6C22C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3F1A545-A3FF-463C-A4FD-84E0BEA6C22C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3F1A545-A3FF-463C-A4FD-84E0BEA6C22C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
