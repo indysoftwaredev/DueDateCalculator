@@ -8,71 +8,80 @@ namespace DueDateCalculator
 {
     public class DueDateCalculator
     {
+        private const int WORKDAY_END_HOUR = 17;
+        private const int WORKING_HOURS_PER_DAY = 8;
+        private const int WORKDAY_START_HOUR = 9;
+
         public static DateTime CalculateDueDate(DateTime submitDate, int turnaroundTime)
         {
+            if (turnaroundTime < 0)
+                throw new ArgumentException("Turnaround time must be non-negative", nameof(turnaroundTime));
+
             DateTime resolveDate = submitDate;
 
-            int daysTurnaroundTime = turnaroundTime / 8;
-            int hoursTurnaroundTime = turnaroundTime % 8;
+            int daysTurnaroundTime = turnaroundTime / WORKING_HOURS_PER_DAY;
+            int hoursTurnaroundTime = turnaroundTime % WORKING_HOURS_PER_DAY;
 
-            resolveDate = NormalizeStartHour(resolveDate);
-            resolveDate = AddDays(resolveDate, daysTurnaroundTime);
-            resolveDate = AddHours(resolveDate, hoursTurnaroundTime);
+            resolveDate = NormalizeStartTime(resolveDate);
+            resolveDate = AddWorkingDays(resolveDate, daysTurnaroundTime);
+            resolveDate = AddWorkingHours(resolveDate, hoursTurnaroundTime);
 
             return resolveDate;
         }
 
-        private static DateTime NormalizeStartHour(DateTime resolveDate)
+        private static DateTime NormalizeStartTime(DateTime date)
         {
-            if(resolveDate.DayOfWeek == DayOfWeek.Saturday)
-            {
-                resolveDate = resolveDate.AddDays(2);
-                resolveDate = resolveDate.Date.AddHours(9);
-            }
-            if(resolveDate.DayOfWeek == DayOfWeek.Sunday)
-            {
-                resolveDate = resolveDate.AddDays(1);
-                resolveDate = resolveDate.Date.AddHours(9);
-            }
-
-            if (resolveDate.Hour < 9)
-            {
-                //set to the beginning of the same day
-                resolveDate = resolveDate.AddHours(9 - resolveDate.Hour);
-            }
-            else if (resolveDate.Hour > 17)
-            {
-                //set the start to the beginning of the next available day
-                resolveDate = AddDays(resolveDate, 1);
-                resolveDate = resolveDate.AddHours(-(resolveDate.Hour - 9));
-            }
-
-            return resolveDate;
+            date = AdjustForWeekend(date);
+            date = AdjustStartHour(date);
+            return date;
         }
 
-        public static DateTime AddDays(DateTime date, int days)
+        private static DateTime AdjustForWeekend(DateTime date) =>
+            date.DayOfWeek switch
+            {
+                DayOfWeek.Saturday => SetToWorkdayStart(date.AddDays(2)),
+                DayOfWeek.Sunday => SetToWorkdayStart(date.AddDays(1)),
+                _ => date
+            };
+
+        private static DateTime SetToWorkdayStart(DateTime date) =>        
+            date.Date.AddHours(WORKDAY_START_HOUR);
+
+        private static DateTime AdjustStartHour(DateTime date) =>
+            date.Hour switch
+            {
+                < WORKDAY_START_HOUR => SetToWorkdayStart(date),
+                > WORKDAY_END_HOUR => SetToWorkdayStart(AddWorkingDays(date, 1)),
+                _ => date
+            };
+
+        public static DateTime AddWorkingDays(DateTime date, int days)
         {            
-            for(int i = days; days > 0; days--)
+            for(int i = days; i > 0; i--)
             {
                 date = date.AddDays(1);
                 if(date.DayOfWeek == DayOfWeek.Saturday)
                 {
-                    date = date.AddDays(2); //skip to monday
+                    date = date.AddDays(2); 
+                } else if (date.DayOfWeek == DayOfWeek.Sunday)
+                {
+                    date = date.AddDays(1);
                 }
             }
             return date;
         }
 
-        public static DateTime AddHours(DateTime date, int hours)
+        public static DateTime AddWorkingHours(DateTime date, int hours)
         {
-            for(int i = hours; hours > 0; hours--)
+            for(int i = hours; i > 0; i--)
             {
                 date = date.AddHours(1);
-                if(date.Hour > 17)
+                if(date.Hour > WORKDAY_END_HOUR)
                 {
-                    date = AddDays(date, 1); //go to next available day
-                    date = date.AddHours(-8); //go to the beginning of the day
-                }
+                    date = AddWorkingDays(date, 1); //go to next available day
+                    date = SetToWorkdayStart(date);
+                    date = date.AddHours(1);
+                } 
             }
             return date;
         }

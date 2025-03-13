@@ -56,7 +56,7 @@ namespace DueDateCalculator.Tests
             var date = new DateTime(2025, 3, 10, 9, 0, 0);
             var days = 1;
             var expected = new DateTime(2025, 3, 11, 9, 0, 0);
-            var result = DueDateCalculator.AddDays(date, days);
+            var result = DueDateCalculator.AddWorkingDays(date, days);
             Assert.Equal(expected, result);
         }
 
@@ -66,7 +66,7 @@ namespace DueDateCalculator.Tests
             var date = new DateTime(2025, 3, 14, 9, 0, 0);
             var days = 1;
             var expected = new DateTime(2025, 3, 17, 9, 0, 0);
-            var result = DueDateCalculator.AddDays(date, days);
+            var result = DueDateCalculator.AddWorkingDays(date, days);
             Assert.Equal(expected, result);
         }
 
@@ -76,7 +76,7 @@ namespace DueDateCalculator.Tests
             var date = new DateTime(2025, 3, 10, 9, 0, 0);
             var hours = 1;
             var expected = new DateTime(2025, 3, 10, 10, 0, 0);
-            var result = DueDateCalculator.AddHours(date, hours);
+            var result = DueDateCalculator.AddWorkingHours(date, hours);
             Assert.Equal(expected, result);
         }
 
@@ -86,7 +86,7 @@ namespace DueDateCalculator.Tests
             var date = new DateTime(2025, 3, 10, 17, 0, 0);
             var hours = 1;
             var expected = new DateTime(2025, 3, 11, 10, 0, 0);
-            var result = DueDateCalculator.AddHours(date, hours);
+            var result = DueDateCalculator.AddWorkingHours(date, hours);
             Assert.Equal(expected, result);
         }
 
@@ -96,7 +96,7 @@ namespace DueDateCalculator.Tests
             var date = new DateTime(2025, 3, 14, 17, 0, 0);
             var hours = 1;
             var expected = new DateTime(2025, 3, 17, 10, 0, 0);
-            var result = DueDateCalculator.AddHours(date, hours);
+            var result = DueDateCalculator.AddWorkingHours(date, hours);
             Assert.Equal(expected, result);
         }
 
@@ -141,5 +141,81 @@ namespace DueDateCalculator.Tests
             var result = DueDateCalculator.CalculateDueDate(date, hours);
             Assert.Equal(expected, result);
         }
+
+        [Fact]
+        public void CalculateDueDate_WhenTurnaroundTimeIsNegative_ThrowsArgumentException()
+        {
+            var submitDate = new DateTime(2025, 3, 10, 9, 0, 0);
+            var turnaroundTime = -1;
+
+            var exception = Assert.Throws<ArgumentException>(() =>
+                DueDateCalculator.CalculateDueDate(submitDate, turnaroundTime));
+
+            Assert.Equal("Turnaround time must be non-negative (Parameter 'turnaroundTime')", exception.Message);
+        }
+
+        [Fact]
+        public void CalculateDueDate_WhenTurnaroundTimeIsZero_ReturnsSameTimeIfWithinWorkDay()
+        {
+            //characterization test - maybe an error should be thrown
+            var submitDate = new DateTime(2025, 3, 10, 14, 0, 0);
+            var turnaroundTime = 0;
+            var expected = submitDate;
+            var result = DueDateCalculator.CalculateDueDate(submitDate, turnaroundTime);
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void CalculateDueDate_WhenExactly40Hours_ReturnsNextWeekSameTime()
+        {
+            var submitDate = new DateTime(2025, 3, 10, 10, 0, 0);
+            var turnaroundTime = 40; // Full work week
+            var expected = new DateTime(2025, 3, 17, 10, 0, 0);
+            var result = DueDateCalculator.CalculateDueDate(submitDate, turnaroundTime);
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void CalculateDueDate_WhenFriday4PMWith4Hours_ReturnsMonday12PM()
+        {
+            var submitDate = new DateTime(2025, 3, 14, 16, 0, 0);
+            var turnaroundTime = 4; // Spans weekend
+            var expected = new DateTime(2025, 3, 17, 12, 0, 0);
+            var result = DueDateCalculator.CalculateDueDate(submitDate, turnaroundTime);
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void CalculateDueDate_WhenExactlyEndOfWorkDay_MovesToNextDay()
+        {
+            var submitDate = new DateTime(2025, 3, 10, 17, 0, 0);
+            var turnaroundTime = 1;
+            var expected = new DateTime(2025, 3, 11, 10, 0, 0);
+            var result = DueDateCalculator.CalculateDueDate(submitDate, turnaroundTime);
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void CalculateDueDate_WhenMultipleWeeksOfWork_CalculatesCorrectly()
+        {
+            var submitDate = new DateTime(2025, 3, 10, 9, 0, 0);
+            var turnaroundTime = 80; // Two full work weeks
+            var expected = new DateTime(2025, 3, 24, 9, 0, 0);
+            var result = DueDateCalculator.CalculateDueDate(submitDate, turnaroundTime);
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void AddWorkingDays_WhenSaturday9AM_2Days_Tuesday9AM()
+        {
+            //fixes bug when starting on a saturday
+            var date = new DateTime(2025, 3, 15, 9, 0, 0); // Saturday at 9AM
+            var days = 2;
+            var expected = new DateTime(2025, 3, 18, 9, 0, 0); // Should be Tuesday at 9AM                        
+            var result = DueDateCalculator.AddWorkingDays(date, days);            
+            Assert.Equal(expected, result);
+        }
+
+
     }
 }
