@@ -39,5 +39,16 @@ namespace DueDateCalculator.Tests
             var result = DueDateCalculator.CalculateDueDate(submitDate, turnaroundTime);
             Assert.Equal(dueDate, result);
         }
+
+        [Fact]
+        public void CalculateDueDate_WhenMonday5PM_1Hour_ReturnsTuesday10AM()
+        {
+            var submitDate = new DateTime(2025, 3, 10, 17, 0, 0);
+            var turnaroundTime = 1;
+            var dueDate = new DateTime(2025, 3, 11, 10, 0, 0);
+            var result = DueDateCalculator.CalculateDueDate(submitDate, turnaroundTime);
+            Assert.Equal(dueDate, result);
+
+        }
     }
 }

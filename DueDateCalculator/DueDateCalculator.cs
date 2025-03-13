@@ -27,9 +27,24 @@ namespace DueDateCalculator
                     resolveDate = resolveDate.AddDays(1);
                 }                
             }
-
+            
             if(hoursTurnaroundTime > 0)
             {
+                //hours can be no more than 7, so we can never add more than a single day.
+                if(resolveDate.Hour + hoursTurnaroundTime > 17)
+                {
+                    resolveDate = resolveDate.AddHours(-8);
+                    resolveDate = resolveDate.AddDays(1);
+                    if (resolveDate.DayOfWeek == DayOfWeek.Saturday)
+                    {
+                        resolveDate = resolveDate.AddDays(2);
+                    }
+                    else if (resolveDate.DayOfWeek == DayOfWeek.Sunday)
+                    {
+                        resolveDate = resolveDate.AddDays(1);
+                    }
+
+                } 
                 resolveDate = resolveDate.AddHours(hoursTurnaroundTime);
             }
 
