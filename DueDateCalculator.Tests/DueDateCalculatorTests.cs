@@ -216,6 +216,46 @@ namespace DueDateCalculator.Tests
             Assert.Equal(expected, result);
         }
 
+        [Fact]
+        public void CalculateDueDate_Tuesday212PM_16Hours_ReturnsThursday212PM()
+        {
+            var date = new DateTime(2025, 3, 11, 14, 12, 0);
+            var hours = 16;
+            var expected = new DateTime(2025, 3, 13, 14, 12, 0);
+            var result = DueDateCalculator.CalculateDueDate(date, hours);
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void CalculateDueDate_Tuesday141230_16Hours_ReturnsThursday141230()
+        {
+            var date = new DateTime(2025, 3, 11, 14, 12, 30);
+            var hours = 16;
+            var expected = new DateTime(2025, 3, 13, 14, 12, 30);
+            var result = DueDateCalculator.CalculateDueDate(date, hours);
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void CalculateDueDate_Tuesday1659_1Hour_ReturnsWednesday0959()
+        {
+            var date = new DateTime(2025, 3, 11, 16, 59, 0);
+            var hours = 1;
+            var expected = new DateTime(2025, 3, 12, 9, 59, 0);
+            var result = DueDateCalculator.CalculateDueDate(date, hours);
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void CalculateDueDate_Tuesday165959_1Hour_ReturnsWednesday095959()
+        {
+            var date = new DateTime(2025, 3, 11, 16, 59, 59);
+            var hours = 1;
+            var expected = new DateTime(2025, 3, 12, 9, 59, 59);
+            var result = DueDateCalculator.CalculateDueDate(date, hours);
+            Assert.Equal(expected, result);
+        }
+
 
     }
 }

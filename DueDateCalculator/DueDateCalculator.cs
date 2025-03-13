@@ -44,8 +44,15 @@ namespace DueDateCalculator
                 _ => date
             };
 
-        private static DateTime SetToWorkdayStart(DateTime date) =>        
-            date.Date.AddHours(WORKDAY_START_HOUR);
+        private static DateTime SetToWorkdayStart(DateTime date) 
+        {
+            int minutes = date.Minute;
+            int seconds = date.Second;
+            return date.Date
+                .AddHours(WORKDAY_START_HOUR)
+                .AddMinutes(minutes)
+                .AddSeconds(seconds);
+        }
 
         private static DateTime AdjustStartHour(DateTime date) =>
             date.Hour switch
@@ -75,15 +82,33 @@ namespace DueDateCalculator
         {
             for(int i = hours; i > 0; i--)
             {
+                bool isExactlyEndOfDay = IsExactlyEndOfDay(date);
                 date = date.AddHours(1);
-                if(date.Hour > WORKDAY_END_HOUR)
+
+                if (BeyondEndOfDay(date))
                 {
-                    date = AddWorkingDays(date, 1); //go to next available day
-                    date = SetToWorkdayStart(date);
-                    date = date.AddHours(1);
-                } 
+                    date = AddWorkingDays(date, 1);
+
+                    int startHour = isExactlyEndOfDay ? WORKDAY_START_HOUR + 1 : WORKDAY_START_HOUR;
+
+                    date = date.Date
+                        .AddHours(startHour)
+                        .AddMinutes(date.Minute)
+                        .AddSeconds(date.Second);
+                }
             }
             return date;
+        }
+
+        private static bool IsExactlyEndOfDay(DateTime date)
+        {
+            return date.Hour == WORKDAY_END_HOUR && date.Minute == 0 && date.Second == 0;
+        }
+
+        private static bool BeyondEndOfDay(DateTime date)
+        {
+            return (date.Hour == WORKDAY_END_HOUR && (date.Minute > 0 || date.Second > 0))
+           || date.Hour > WORKDAY_END_HOUR;
         }
     }
 }
