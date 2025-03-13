@@ -15,10 +15,28 @@ namespace DueDateCalculator
             int daysTurnaroundTime = turnaroundTime / 8;
             int hoursTurnaroundTime = turnaroundTime % 8;
 
+            resolveDate = NormalizeStartHour(resolveDate);
             resolveDate = AddDays(resolveDate, daysTurnaroundTime);
             resolveDate = AddHours(resolveDate, hoursTurnaroundTime);
 
-            return resolveDate;            
+            return resolveDate;
+        }
+
+        private static DateTime NormalizeStartHour(DateTime resolveDate)
+        {
+            if (resolveDate.Hour < 9)
+            {
+                //set to the beginning of the same day
+                resolveDate = resolveDate.AddHours(9 - resolveDate.Hour);
+            }
+            else if (resolveDate.Hour > 17)
+            {
+                //set the start to the beginning of the next available day
+                resolveDate = AddDays(resolveDate, 1);
+                resolveDate = resolveDate.AddHours(-(resolveDate.Hour - 9));
+            }
+
+            return resolveDate;
         }
 
         public static DateTime AddDays(DateTime date, int days)

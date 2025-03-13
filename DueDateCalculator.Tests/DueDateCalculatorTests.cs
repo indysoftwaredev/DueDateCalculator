@@ -99,5 +99,27 @@ namespace DueDateCalculator.Tests
             var result = DueDateCalculator.AddHours(date, hours);
             Assert.Equal(expected, result);
         }
+
+        [Fact]
+        public void CalculateDueDate_WhenMonday8AM_1Hour_ReturnsMonday10AM ()
+        {
+            //case when the date is too early
+            var date = new DateTime(2025, 3, 10, 8, 0, 0);
+            var hours = 1;
+            var expected = new DateTime(2025, 3, 10, 10, 0, 0);
+            var result = DueDateCalculator.CalculateDueDate(date, hours);
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void CalculateDueDate_WhenMonday6PM_1Hour_ReturnsTuesday10AM()
+        {
+            //case when the date is too late
+            var date = new DateTime(2025, 3, 10, 18, 0, 0);
+            var hours = 1;
+            var expected = new DateTime(2025, 3, 11, 10, 0, 0);
+            var result = DueDateCalculator.CalculateDueDate(date, hours);
+            Assert.Equal(expected, result);
+        }
     }
 }
