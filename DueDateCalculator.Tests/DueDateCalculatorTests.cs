@@ -48,6 +48,26 @@ namespace DueDateCalculator.Tests
             var dueDate = new DateTime(2025, 3, 11, 10, 0, 0);
             var result = DueDateCalculator.CalculateDueDate(submitDate, turnaroundTime);
             Assert.Equal(dueDate, result);
+        }
+
+        [Fact]
+        public void AddDays_WhenMonday9AM_1Day_ReturnsTuesday9AM()
+        {
+            var date = new DateTime(2025, 3, 10, 9, 0, 0);
+            var days = 1;
+            var expected = new DateTime(2025, 3, 11, 9, 0, 0);
+            var result = DueDateCalculator.AddDays(date, days);
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void AddDays_WhenFriday9AM_1Day_ReturnsMonday9AM()
+        {
+            var date = new DateTime(2025, 3, 14, 9, 0, 0);
+            var days = 1;
+            var expected = new DateTime(2025, 3, 17, 9, 0, 0);
+            var result = DueDateCalculator.AddDays(date, days);
+            Assert.Equal(expected, result);
 
         }
     }
