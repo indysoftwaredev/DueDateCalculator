@@ -176,7 +176,7 @@ namespace DueDateCalculator.Tests
         }
 
         [Fact]
-        public void CalculateDueDate_WhenFriday4PMWith4Hours_ReturnsMonday12PM()
+        public void CalculateDueDate_WhenFriday4PM_4Hours_ReturnsMonday12PM()
         {
             var submitDate = new DateTime(2025, 3, 14, 16, 0, 0);
             var turnaroundTime = 4; // Spans weekend
@@ -252,6 +252,36 @@ namespace DueDateCalculator.Tests
             var date = new DateTime(2025, 3, 11, 16, 59, 59);
             var hours = 1;
             var expected = new DateTime(2025, 3, 12, 9, 59, 59);
+            var result = DueDateCalculator.CalculateDueDate(date, hours);
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void CalculateDueDate_Friday165959_1Hour_ReturnsMonday095959()
+        {
+            var date = new DateTime(2025, 3, 14, 16, 59, 59);
+            var hours = 1;
+            var expected = new DateTime(2025, 3, 17, 9, 59, 59);
+            var result = DueDateCalculator.CalculateDueDate(date, hours);
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void CalculateDueDate_Friday165959_40Hour_ReturnsFriday165959()
+        {
+            var date = new DateTime(2025, 3, 14, 16, 59, 59);
+            var hours = 40;
+            var expected = new DateTime(2025, 3, 21, 16, 59, 59);
+            var result = DueDateCalculator.CalculateDueDate(date, hours);
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void CalculateDueDate_Friday165959_160Hour_ReturnsFriday165959()
+        {
+            var date = new DateTime(2025, 3, 14, 16, 59, 59);
+            var hours = 160;
+            var expected = new DateTime(2025, 4, 11, 16, 59, 59);
             var result = DueDateCalculator.CalculateDueDate(date, hours);
             Assert.Equal(expected, result);
         }

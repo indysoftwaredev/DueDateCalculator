@@ -64,7 +64,7 @@ namespace DueDateCalculator
 
         public static DateTime AddWorkingDays(DateTime date, int days)
         {            
-            for(int i = days; i > 0; i--)
+            for(int i = 0; i < days; i++)
             {
                 date = date.AddDays(1);
                 if(date.DayOfWeek == DayOfWeek.Saturday)
@@ -80,7 +80,7 @@ namespace DueDateCalculator
 
         public static DateTime AddWorkingHours(DateTime date, int hours)
         {
-            for(int i = hours; i > 0; i--)
+            for(int i = 0; i < hours; i++)
             {
                 bool isExactlyEndOfDay = IsExactlyEndOfDay(date);
                 date = date.AddHours(1);
