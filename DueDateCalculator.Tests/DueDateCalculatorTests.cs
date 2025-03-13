@@ -121,5 +121,25 @@ namespace DueDateCalculator.Tests
             var result = DueDateCalculator.CalculateDueDate(date, hours);
             Assert.Equal(expected, result);
         }
+
+        [Fact]
+        public void CalculateDueDate_WhenSaturday4PM_1Hour_ReturnsMonday10AM()
+        {
+            var date = new DateTime(2025, 3, 8, 16, 0, 0);
+            var hours = 1;
+            var expected = new DateTime(2025, 3, 10, 10, 0, 0);
+            var result = DueDateCalculator.CalculateDueDate(date, hours);
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void CalculateDueDate_WhenSunday4PM_1Hour_ReturnsMonday10AM()
+        {
+            var date = new DateTime(2025, 3, 9, 16, 0, 0);
+            var hours = 1;
+            var expected = new DateTime(2025, 3, 10, 10, 0, 0);
+            var result = DueDateCalculator.CalculateDueDate(date, hours);
+            Assert.Equal(expected, result);
+        }
     }
 }

@@ -24,6 +24,17 @@ namespace DueDateCalculator
 
         private static DateTime NormalizeStartHour(DateTime resolveDate)
         {
+            if(resolveDate.DayOfWeek == DayOfWeek.Saturday)
+            {
+                resolveDate = resolveDate.AddDays(2);
+                resolveDate = resolveDate.Date.AddHours(9);
+            }
+            if(resolveDate.DayOfWeek == DayOfWeek.Sunday)
+            {
+                resolveDate = resolveDate.AddDays(1);
+                resolveDate = resolveDate.Date.AddHours(9);
+            }
+
             if (resolveDate.Hour < 9)
             {
                 //set to the beginning of the same day
